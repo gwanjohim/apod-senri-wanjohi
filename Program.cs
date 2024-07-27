@@ -30,6 +30,7 @@ APODAPIResult? PullImage(ApodConfiguration config)
         var apodApiResult = JsonSerializer.Deserialize<APODAPIResult>(response.Content);
         return apodApiResult;
     }
+
     return null;
 }
 
@@ -52,21 +53,16 @@ void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory)
         }
         else
         {
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
                 return;
             var stream = File.Create(filePath);
             stream.Write(response);
             stream.Close();
         }
     }
-    else
-    {
-        Console.WriteLine("The image does not exist");
-    }
+    Console.WriteLine("The image does not exist");
 }
 
 var apodConfiguration = LoadConfiguration();
 var imageResult = PullImage(apodConfiguration);
 SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation);
-
-
