@@ -35,34 +35,42 @@ APODAPIResult? PullImage(ApodConfiguration config)
 }
 
 
-void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory)
+void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory, string fetchDate)
 {
     if (imageData != default)
     {
         var client = new RestClient(imageData.url);
         var request = new RestRequest("", Method.Get);
-        byte[] response = client.DownloadData(request);
-        var filePath = $"{downloadDirectory}/{imageData.title}";
+        byte[]? response = client.DownloadData(request);
+
+
+        var fileName = imageData.url.Substring(imageData.url.LastIndexOf('/') + 1);
+        downloadDirectory += $"/{fetchDate}";
+
+        var imagePath = $"{downloadDirectory}/{fileName}";
+        var descriptionPath = Path.Combine(downloadDirectory, "description.txt");
 
         if (!Directory.Exists(downloadDirectory))
         {
             Directory.CreateDirectory(downloadDirectory);
-            var stream = File.Create(filePath);
-            stream.Write(response);
-            stream.Close();
         }
-        else
+
+        if (File.Exists(imagePath))
+            return;
+        var stream = File.Create(imagePath);
+        stream.Write(response);
+        stream.Close();
+
+        if (!File.Exists(descriptionPath))
         {
-            if (File.Exists(filePath))
-                return;
-            var stream = File.Create(filePath);
-            stream.Write(response);
-            stream.Close();
+            using StreamWriter outputFile = new StreamWriter(descriptionPath);
+            outputFile.WriteLine(imageData.explanation);
         }
     }
+
     Console.WriteLine("The image does not exist");
 }
 
 var apodConfiguration = LoadConfiguration();
 var imageResult = PullImage(apodConfiguration);
-SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation);
+SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration.Date);
