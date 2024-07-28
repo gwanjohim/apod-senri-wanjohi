@@ -4,6 +4,11 @@ using System.Net;
 using System.Text.Json;
 using RestSharp;
 using Senri_APOD_Wanjohi;
+using Serilog;
+
+using var log = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
 ApodConfiguration LoadConfiguration()
 {
@@ -25,19 +30,27 @@ APODAPIResult? PullImage(ApodConfiguration config)
     request.AddParameter("api_key", config.ApiKey);
     request.AddParameter("date", config.Date);
     var response = client.Execute(request);
-    if (response.Content != null)
+    if (response.ErrorMessage != null)
+    {
+        log.Error(response.ErrorMessage);
+        return null;
+  
+    }
+    if(response.Content != null)
     {
         var apodApiResult = JsonSerializer.Deserialize<APODAPIResult>(response.Content);
         return apodApiResult;
     }
-
+    
+    log.Error("Could not make a request to the APOD API, please check your internet connection and try again");
     return null;
+
 }
 
 
 void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory, string fetchDate)
 {
-    if (imageData != default)
+    if (imageData is { url: not null })
     {
         var client = new RestClient(imageData.url);
         var request = new RestRequest("", Method.Get);
@@ -55,8 +68,10 @@ void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory, strin
             Directory.CreateDirectory(downloadDirectory);
         }
 
-        if (File.Exists(imagePath))
+        if (File.Exists(imagePath)){
+            log.Warning($"The file associated with date {fetchDate} already exists");
             return;
+        }
         var stream = File.Create(imagePath);
         stream.Write(response);
         stream.Close();
@@ -67,8 +82,11 @@ void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory, strin
             outputFile.WriteLine(imageData.explanation);
         }
     }
+    else
+    {
+        Log.Warning("The image data url was null and therefore no image could be downloaded");
+    }
 
-    Console.WriteLine("The image does not exist");
 }
 
 var apodConfiguration = LoadConfiguration();
