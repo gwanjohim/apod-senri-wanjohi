@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Senri_APOD_Wanjohi", "Senri_APOD_Wanjohi.csproj", "{70413853-57E2-43C1-B93C-D83D36764742}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Senri_APOD_Wanjohi", "Senri_APOD_Wanjohi/Senri_APOD_Wanjohi.csproj", "{70413853-57E2-43C1-B93C-D83D36764742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Senri_APOD_Wanjohi_Test", "Senri_APOD_Wanjohi_Test/Senri_APOD_Wanjohi_Test.csproj", "{F1DF77DE-8FFE-44E2-A5E4-8C52304CBDBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{70413853-57E2-43C1-B93C-D83D36764742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70413853-57E2-43C1-B93C-D83D36764742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70413853-57E2-43C1-B93C-D83D36764742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1DF77DE-8FFE-44E2-A5E4-8C52304CBDBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1DF77DE-8FFE-44E2-A5E4-8C52304CBDBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1DF77DE-8FFE-44E2-A5E4-8C52304CBDBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1DF77DE-8FFE-44E2-A5E4-8C52304CBDBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

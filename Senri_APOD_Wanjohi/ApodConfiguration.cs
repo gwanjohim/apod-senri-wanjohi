@@ -5,9 +5,10 @@ namespace Senri_APOD_Wanjohi;
 public class ApodConfiguration
 {
     public string ApiBaseUrl { get; set; } = "";
-    public string ApiKey { get; set; } = "0eU45WlKbhS4AgbFDrjcIUuv5ZuxKuD6zxjo0KpV";
+    public string ApiKey { get; set; } = "";
     public string Date { get; set; } = "";
     public string DownloadLocation { get; set; } = "";
+    public bool DownloadFileHdVersion { get; set; } = false;
 }
 public class APODAPIResult
 {
