@@ -8,7 +8,6 @@ public class ApodConfiguration
     public string ApiKey { get; set; } = "";
     public string Date { get; set; } = "";
     public string DownloadLocation { get; set; } = "";
-    public bool DownloadFileHdVersion { get; set; } = false;
 }
 public class APODAPIResult
 {

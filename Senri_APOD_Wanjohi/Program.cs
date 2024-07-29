@@ -22,7 +22,7 @@ public class APODIntegration
         return config!;
     }
 
-    public APODAPIResult? PullImage(ApodConfiguration config)
+    public APODAPIResult? PullDocument(ApodConfiguration config)
     {
         var client = new RestClient(config.ApiBaseUrl);
         var request = new RestRequest("", Method.Get);
@@ -51,17 +51,10 @@ public class APODIntegration
     public void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory,
         ApodConfiguration apodConfiguration)
     {
-        var fileUrl = "";
-        if (imageData != null)
-            fileUrl = apodConfiguration.DownloadFileHdVersion ? imageData.hdurl : imageData.url;
-
+        var fileUrl = imageData.url;
+       
         if (!string.IsNullOrWhiteSpace(fileUrl))
         {
-            // var client = new RestClient(fileUrl);
-            // var request = new RestRequest("#", Method.Get);
-            // byte[]? response = client.DownloadData(request);
-
-
             var fileName = fileUrl.Substring(fileUrl.LastIndexOf('/') + 1);
             downloadDirectory += $"/{apodConfiguration.Date}";
 
@@ -120,7 +113,7 @@ public class Program
         var integration = new APODIntegration();
 
         var apodConfiguration = integration.LoadConfiguration();
-        var imageResult = integration.PullImage(apodConfiguration);
+        var imageResult = integration.PullDocument(apodConfiguration);
         integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
         return 0;
     }

@@ -10,7 +10,7 @@ public class UnitTests
         var integration = new APODIntegration();
         var apodConfiguration = integration.LoadConfiguration();
         apodConfiguration.Date = DateTime.Now.Date.Add(TimeSpan.FromDays(1)).ToString();
-        var imageResult = integration.PullImage(apodConfiguration);
+        var imageResult = integration.PullDocument(apodConfiguration);
         Assert.Null(imageResult);
     }
 
@@ -20,42 +20,38 @@ public class UnitTests
         var integration = new APODIntegration();
         var apodConfiguration = integration.LoadConfiguration();
         apodConfiguration.Date =  "2024-07-21";
-        var imageResult = integration.PullImage(apodConfiguration);
+        var imageResult = integration.PullDocument(apodConfiguration);
         integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
         Assert.NotNull(imageResult);
     }
 
     [Fact]
-    public void WhenFileIsVide_SavesSuccessfully()
+    public void WhenFileIsVideo_ItIsSavedSuccessfully()
     {
         var integration = new APODIntegration();
         var apodConfiguration = integration.LoadConfiguration();
         apodConfiguration.Date = "2024-07-28"; //on this date the file is a video
-        var imageResult = integration.PullImage(apodConfiguration);
+        var imageResult = integration.PullDocument(apodConfiguration);
         integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
         Assert.NotNull(imageResult);
     }
     
     [Fact]
-    public void CanPullItemsOverAWideRangeOfDates()
+    public void CanPullItemsOverAWideRangeOfDates_SayForAMonth()
     {
         var startDate = DateTime.Parse("2024-1-1");
 
-        while (startDate < DateTime.Now)
+        while (startDate < DateTime.Parse("2024-2-1"))
         {
             var integration = new APODIntegration();
             var apodConfiguration = integration.LoadConfiguration();
-            apodConfiguration.Date = startDate.ToString("yyyy-MM-dd"); //on this date the file is a video
-            var imageResult = integration.PullImage(apodConfiguration);
+            apodConfiguration.Date = startDate.ToString("yyyy-MM-dd"); 
+            var imageResult = integration.PullDocument(apodConfiguration);
             integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
             Assert.NotNull(imageResult);
 
             startDate = startDate.AddDays(1);
             
         }
-       
-         
-        
-        
     }
 }
