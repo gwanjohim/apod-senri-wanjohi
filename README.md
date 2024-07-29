@@ -11,7 +11,40 @@ NASA Astronomy Picture of the Day (APOD) API, saves the picture to a file, and s
 description in an organized manner by date. Additionally, the application should read settings
 from a JSON file.
 
-## Reading configuration from a json file
+## To run the project
+
+navigate to Senri_APOD_Wanjohi folder, restore packages as follows
+
+```bash 
+ > dotnet restore
+```
+
+update the configurations in AppSettings.json
+
+```json
+{
+  "ApiBaseUrl": "https://api.nasa.gov/planetary/apod",
+  "ApiKey": "0eU45WlKbhS4AgbFDrjcIUuv5ZuxKuD6zxjo0KpV",
+  "Date": "2024-12-12",
+  "DownloadLocation": "/home/elite/Documents/APOD_Images",
+}
+```
+
+Note: The download Location should be an **absolute path.** 
+
+The date format is as provided here, **yyyy-mm-dd**
+
+
+To run the application, 
+
+
+```sh
+> dotnet run
+```
+
+# How the Program works
+
+## 1. Reading configuration from a json file
 
 The configuration class has the following properties
 
@@ -44,7 +77,7 @@ To load the configuration the following method is invoked
 ```
 
 
-Once the configurations are loaded, we can pull the content from the APOD API as follows
+## 2. Once the configurations are loaded, we can pull the content from the APOD API as follows
 
 ```C#
      public APODAPIResult? PullDocument(ApodConfiguration config)
@@ -74,7 +107,7 @@ Once the configurations are loaded, we can pull the content from the APOD API as
 
 ```
 
-After successful download, the next code snippet illustrates how saving the fetched data works
+## 3. After successful download, the next code snippet illustrates how saving the fetched data works
 
 ```c#
    public void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory,
