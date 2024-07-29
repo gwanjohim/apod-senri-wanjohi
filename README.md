@@ -180,6 +180,11 @@ Libraries used in this project
 3. VideoLibrary is a package to download videos from youtube
 
 
+## Closing remarks
+
+    You will also find a test project running on XUnit. There are unit tests to test for some critical scenraios
+
+
 Prepared and presented by George Wanjohi
 
 1. Email: gwanjohim@gmail.com
