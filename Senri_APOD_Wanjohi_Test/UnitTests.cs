@@ -19,8 +19,9 @@ public class UnitTests
     {
         var integration = new APODIntegration();
         var apodConfiguration = integration.LoadConfiguration();
-        apodConfiguration.Date = DateTime.Now.Date.Subtract(TimeSpan.FromDays(1)).Date.ToString("yyyy-MM-dd");
+        apodConfiguration.Date =  "2024-07-21";
         var imageResult = integration.PullImage(apodConfiguration);
+        integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
         Assert.NotNull(imageResult);
     }
 
@@ -29,11 +30,32 @@ public class UnitTests
     {
         var integration = new APODIntegration();
         var apodConfiguration = integration.LoadConfiguration();
-        apodConfiguration.Date = "2024-07-28";
+        apodConfiguration.Date = "2024-07-28"; //on this date the file is a video
         var imageResult = integration.PullImage(apodConfiguration);
-        imageResult.url = "https://youtu.be/wDchsz8nmbo";
-
         integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
         Assert.NotNull(imageResult);
+    }
+    
+    [Fact]
+    public void CanPullItemsOverAWideRangeOfDates()
+    {
+        var startDate = DateTime.Parse("2024-1-1");
+
+        while (startDate < DateTime.Now)
+        {
+            var integration = new APODIntegration();
+            var apodConfiguration = integration.LoadConfiguration();
+            apodConfiguration.Date = startDate.ToString("yyyy-MM-dd"); //on this date the file is a video
+            var imageResult = integration.PullImage(apodConfiguration);
+            integration.SaveImageOfTheDay(imageResult, apodConfiguration.DownloadLocation, apodConfiguration);
+            Assert.NotNull(imageResult);
+
+            startDate = startDate.AddDays(1);
+            
+        }
+       
+         
+        
+        
     }
 }

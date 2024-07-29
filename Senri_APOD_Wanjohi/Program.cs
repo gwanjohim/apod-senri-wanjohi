@@ -5,6 +5,7 @@ using System.Text.Json;
 using RestSharp;
 using Senri_APOD_Wanjohi;
 using Serilog;
+using VideoLibrary;
 
 public class APODIntegration
 {
@@ -41,6 +42,7 @@ public class APODIntegration
             var apodApiResult = JsonSerializer.Deserialize<APODAPIResult>(response.Content);
             return apodApiResult;
         }
+
         Log.Error("Could not make a request to the APOD API, please check your internet connection and try again");
         return null;
     }
@@ -59,8 +61,7 @@ public class APODIntegration
             // var request = new RestRequest("#", Method.Get);
             // byte[]? response = client.DownloadData(request);
 
-          
-            
+
             var fileName = fileUrl.Substring(fileUrl.LastIndexOf('/') + 1);
             downloadDirectory += $"/{apodConfiguration.Date}";
 
@@ -77,22 +78,30 @@ public class APODIntegration
                 using StreamWriter outputFile = new StreamWriter(descriptionPath);
                 outputFile.WriteLine(imageData.explanation);
             }
-            
+
             if (File.Exists(imagePath))
             {
                 Log.Warning($"The file associated with date {apodConfiguration.Date} already exists");
                 return;
             }
 
-            var stream = File.Create(imagePath);
-            
-            var webClient = new WebClient();
-            var result =  webClient.DownloadData(fileUrl);
-            
-            stream.Write(result);
-            stream.Close();
-
-         
+            if (imageData.media_type == "video")
+            {
+                // var VedioUrl = "https://www.youtube.com/embed/" + objYouTube.VideoID + ".mp4";
+                var VedioUrl = imageData.url;
+                var youTube = YouTube.Default;
+                var video = youTube.GetVideo(VedioUrl);
+                var videoSavingLocation = $"{downloadDirectory}/{imageData.title}.mp4";
+                System.IO.File.WriteAllBytes(videoSavingLocation, video.GetBytes());
+            }
+            else
+            {
+                var stream = File.Create(imagePath);
+                var webClient = new WebClient();
+                var result = webClient.DownloadData(fileUrl);
+                stream.Write(result);
+                stream.Close();
+            }
         }
         else
         {
