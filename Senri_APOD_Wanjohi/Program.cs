@@ -80,10 +80,9 @@ public class APODIntegration
 
             if (imageData.media_type == "video")
             {
-                // var VedioUrl = "https://www.youtube.com/embed/" + objYouTube.VideoID + ".mp4";
-                var VedioUrl = imageData.url;
+                var videoUrl = imageData.url;
                 var youTube = YouTube.Default;
-                var video = youTube.GetVideo(VedioUrl);
+                var video = youTube.GetVideo(videoUrl);
                 var videoSavingLocation = $"{downloadDirectory}/{imageData.title}.mp4";
                 System.IO.File.WriteAllBytes(videoSavingLocation, video.GetBytes());
             }

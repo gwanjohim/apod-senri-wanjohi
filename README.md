@@ -47,7 +47,7 @@ To load the configuration the following method is invoked
 Once the configurations are loaded, we can pull the content from the APOD API as follows
 
 ```C#
-    public APODAPIResult? PullDocument(ApodConfiguration config)
+     public APODAPIResult? PullDocument(ApodConfiguration config)
     {
         var client = new RestClient(config.ApiBaseUrl);
         var request = new RestRequest("", Method.Get);
@@ -73,3 +73,81 @@ Once the configurations are loaded, we can pull the content from the APOD API as
     }
 
 ```
+
+After successful download, the next code snippet illustrates how saving the fetched data works
+
+```c#
+   public void SaveImageOfTheDay(APODAPIResult? imageData, string downloadDirectory,
+        ApodConfiguration apodConfiguration)
+    {
+        var fileUrl = imageData.url;
+       
+        if (!string.IsNullOrWhiteSpace(fileUrl))
+        {
+            var fileName = fileUrl.Substring(fileUrl.LastIndexOf('/') + 1);
+            downloadDirectory += $"/{apodConfiguration.Date}";
+
+            var imagePath = $"{downloadDirectory}/{fileName}";
+            var descriptionPath = Path.Combine(downloadDirectory, "description.txt");
+
+            if (!Directory.Exists(downloadDirectory))
+            {
+                Directory.CreateDirectory(downloadDirectory);
+            }
+
+            if (!File.Exists(descriptionPath))
+            {
+                using StreamWriter outputFile = new StreamWriter(descriptionPath);
+                outputFile.WriteLine(imageData.explanation);
+            }
+
+            if (File.Exists(imagePath))
+            {
+                Log.Warning($"The file associated with date {apodConfiguration.Date} already exists");
+                return;
+            }
+
+            if (imageData.media_type == "video")
+            {
+                var videoUrl = imageData.url;
+                var youTube = YouTube.Default;
+                var video = youTube.GetVideo(videoUrl);
+                var videoSavingLocation = $"{downloadDirectory}/{imageData.title}.mp4";
+                System.IO.File.WriteAllBytes(videoSavingLocation, video.GetBytes());
+            }
+            else
+            {
+                var stream = File.Create(imagePath);
+                var webClient = new WebClient();
+                var result = webClient.DownloadData(fileUrl);
+                stream.Write(result);
+                stream.Close();
+            }
+        }
+        else
+        {
+            Log.Warning("The image data url was null and therefore no image could be downloaded");
+        }
+    }
+```
+
+Libraries used in this project
+
+```c#
+      <PackageReference Include="RestSharp" Version="111.4.0" />
+      <PackageReference Include="Serilog" Version="4.0.1" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+      <PackageReference Include="VideoLibrary" Version="3.2.4" />
+```
+
+1. Restsharp is used as a wrapper on top of http client library
+
+2. Serilog is used to Log messages on the console
+
+3. VideoLibrary is a package to download videos from youtube
+
+
+Prepared and presented by George Wanjohi
+
+1. Email: gwanjohim@gmail.com
+2. Cell: 0707007337
