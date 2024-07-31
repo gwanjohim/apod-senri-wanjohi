@@ -24,7 +24,7 @@ update the configurations in AppSettings.json
 ```json
 {
   "ApiBaseUrl": "https://api.nasa.gov/planetary/apod",
-  "ApiKey": "0eU45WlKbhS4AgbFDrjcIUuv5ZuxKuD6zxjo0KpV",
+  "ApiKey": API_KEY_GOES_HERE",
   "Date": "2024-12-12",
   "DownloadLocation": "/home/elite/Documents/APOD_Images",
 }
